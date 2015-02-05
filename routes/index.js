@@ -37,7 +37,11 @@ function createId() {
 
 // GET home page.
 router.get('/', function(req, res, next) {
-    res.render('index', { title: 'Express' , db: JSON.stringify(db, null, "\t")});
+    res.render('index', {
+        title: 'URLNode',
+        title_kicker: ' - URL shortener on node.js',
+        db: db
+    });
 });
 
 // POST /shorten

@@ -2,6 +2,10 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+    small= title_kicker
+  p #{title} is highly barebones as of now, and uses only memory for link storage.
   h2 Contents
-  p= db
+  ul
+    each val, prop in db
+      li
+        a(href=prop)= prop + " -> " + val 
