@@ -11,16 +11,21 @@ var db = {};
 
 /// Create an ID of length 5. Collisions are handled by try-try-try-again.
 function createId() {
-    var id = null;
+    var id = "";
     var chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
     // Try five times. Repeated collisions unprobable enough for now!
-    for (var tryouts=0; tryouts<5; tryouts++) {
+    for (var tryout=0; tryout<5; tryout++) {
         for (var i=0; i<5; i++)
             id += chars.charAt(Math.floor(Math.random() * chars.length));
         // If the entry is unique (and not built-in) break and be happy with it
         if (typeof db[id] === "undefined")
             break;
+        else
+            id = "";
+        // Log excess attempts
+        if (tryout)
+            console.log(["Retrying id creation, attempt #", tryout+1].join(""));
     }
 
     return id;
