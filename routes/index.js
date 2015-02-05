@@ -49,7 +49,7 @@ router.post("/shorten", function(req, res, next) {
         } else {
             db[id] = req.body.link;
             res.status(200).send(id);
-        } 
+        }
     }
 });
 
@@ -60,9 +60,8 @@ router.get("/:id", function(req, res, next) {
     debug(["GET /:id", req.params.id, "->", url].join(" "));
     // Check existence
     if (!url) {
-        //TODO switch to next and proper 404
-        //next();
-        res.sendStatus(404);
+        // Move on and likely give proper 404s later
+        next();
     } else {
         res.redirect(301, url);
     }
