@@ -30,13 +30,14 @@ function createId() {
 /// ROUTES
 //////////////////////////////////////////////////////////////////////////////
 
-/* GET home page. */
+// GET home page.
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' , db: JSON.stringify(db, null, "\t")});
 });
 
+// POST /shorten
 router.post("/shorten", function(req, res, next) {
-    debug(["POST -> /shorten ", JSON.stringify(req.body)].join(""));
+    debug(["POST /shorten ", JSON.stringify(req.body)].join(""));
     // Check that request has param link (as url-encoded)
     if (!req.body.link) {
         res.status(400).send("Request missing parameter link.");
@@ -51,5 +52,21 @@ router.post("/shorten", function(req, res, next) {
         } 
     }
 });
+
+// GET /:id
+router.get("/:id", function(req, res, next) {
+    //TODO sanitize
+    var url = db[req.params.id];
+    debug(["GET /:id", req.params.id, "->", url].join(" "));
+    // Check existence
+    if (!url) {
+        //TODO switch to next and proper 404
+        //next();
+        res.sendStatus(404);
+    } else {
+        res.redirect(301, url);
+    }
+})
+
 
 module.exports = router;
