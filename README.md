@@ -1,7 +1,7 @@
 URLNode
 =======
 
-An awesome URL shortener running on node.js
+An awesome URL shortener running on node.js, running live on http://urlnode.herokuapp.com/.
 
 About
 -----
