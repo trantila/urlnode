@@ -57,6 +57,7 @@ router.post("/shorten", function(req, res, next) {
             res.status(500).send("Could not generate an shorthand URL. You may try again.");
         } else {
             db[id] = req.body.link;
+            res.set("Content-Type", "text/plain");
             res.status(200).send(id);
         }
     }
