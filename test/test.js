@@ -2,7 +2,8 @@ var request = require("supertest"),
     assert = require("assert"),
     app = require("../app");
 
-describe("Root routes", function() {
+
+describe("Root routes (/)", function() {
     describe("GET /", function() {
         it("should respond with the index page", function(done) {
             request(app)
