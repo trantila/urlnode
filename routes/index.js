@@ -1,6 +1,7 @@
 var express = require('express');
 var debug = require('debug')('urlnode:routes');
-var router = express.Router();
+var root = express.Router();
+var urls = express.Router();
 
 //////////////////////////////////////////////////////////////////////////////
 /// LOGIC
@@ -35,8 +36,10 @@ function createId() {
 /// ROUTES
 //////////////////////////////////////////////////////////////////////////////
 
+/// Root level
+
 // GET home page.
-router.get('/', function(req, res, next) {
+root.get('/', function(req, res, next) {
     res.render('index', {
         title: 'URLNode',
         title_kicker: ' - URL shortener on node.js',
@@ -45,7 +48,7 @@ router.get('/', function(req, res, next) {
 });
 
 // POST /shorten
-router.post("/shorten", function(req, res, next) {
+root.post("/shorten", function(req, res, next) {
     debug(["POST /shorten ", JSON.stringify(req.body)].join(""));
     // Check that request has param link (as url-encoded)
     if (!req.body.link) {
@@ -64,7 +67,7 @@ router.post("/shorten", function(req, res, next) {
 });
 
 // GET /:id
-router.get("/:id", function(req, res, next) {
+root.get("/:id", function(req, res, next) {
     //TODO sanitize
     var url = db[req.params.id];
     debug(["GET /:id", req.params.id, "->", url].join(" "));
@@ -75,7 +78,51 @@ router.get("/:id", function(req, res, next) {
     } else {
         res.redirect(301, url);
     }
+});
+
+
+/// URLS collection
+
+root.use("/urls", urls);
+urls.all(function(req, res, next) {
+    res.set("Content-type", "application/json");
 })
 
+// Collection
+urls.route("/")
+.get(function(req, res, next) {
+    debug("GET /urls/");
+    // TODO no limits
+    var entries = [];
+    for (id in db)
+        entries.push({"id": id, "link": db[id]});
+    res.status(200).json(entries);
+})
+// POST /
+.post(function(req, res, next) {
+    debug(["POST /urls/ ", JSON.stringify(req.body)].join(""));
+    // Check that request has params link and id
+    if (!req.body.link || !req.body.id) {
+        res.status(400).json({"error": "Request missing parameter(s)."});
+    } else {
+        if (db[req.body.id]) {
+            res.status(400).json({"error": "Entry with given short-url/id exists already."});
+        } else {
+            db[req.body.id] = req.body.link;
+            res.status(200).json({"id": req.body.id, "link": req.body.link});
+        }
+    }
+});
 
-module.exports = router;
+// Resource
+urls.route("/:id")
+.get(function(req, res, next) {
+    debug("GET /urls/:id");
+    if (!db[req.params.id])
+        res.status(404).json({"error": "No entry with given id."});
+    else
+        res.status(200).json({"id": req.body.id, "link": db[req.params.id]});
+});
+
+
+module.exports = root;
