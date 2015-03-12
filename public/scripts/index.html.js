@@ -21,15 +21,28 @@ $(function () {
         return $("input").val();
     }
 
-    var clicks = $("button").asEventStream("click")
-        .log();
+    var clicks = $("button").asEventStream("click");
+    clicks.log();
 
     var text = $("input").asEventStream("keyup")
         .map(getInputValue)
-        .toProperty(getInputValue())
-        .log();
+        .toProperty(getInputValue());
+    text.log();
 
     var buttonEnabled = text
-        .map(urlnode.yes).log()
-        .not().onValue($("button"), "attr", "disabled");
+        .map(urlnode.yes);
+    buttonEnabled.log();
+
+    buttonEnabled.not()
+        .onValue($("button"), "attr", "disabled");
+
+    var responses = clicks.flatMap(function(click) {
+        console.log("ENTER AJAX");
+        return Bacon.fromPromise($.post("/shorten/", {
+            "link": $("input").val()
+        }));
+    });
+    responses.onValue(function (response) {
+        console.log("AJAX RETURNS");
+    });
 });
