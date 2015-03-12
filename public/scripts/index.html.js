@@ -12,6 +12,34 @@
 })(window);
 
 
+// URL model
+var URL = Backbone.Model.extend({});
+
+// URLs collection
+var URLs = Backbone.Collection.extend({
+    model: URL
+});
+
+
+// URL list view
+var URLEntry = Backbone.View.extend({
+    tagName: "li",
+    className: "url-entry",
+    events: {
+        "click .icon":          "open",
+        "click .button.edit":   "openEditDialog",
+        "click .button.delete": "destroy"
+    },
+
+    initialize: function() {
+        this.listenTo(this.model, "change", this.render);
+    },
+
+    render: function() {}
+
+});
+
+
 ///////////////////////////////////////////////////////////////////////////////
 // ON PAGE LOAD
 ///////////////////////////////////////////////////////////////////////////////
