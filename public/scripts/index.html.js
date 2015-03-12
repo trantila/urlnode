@@ -1,1 +1,6 @@
-asdasd
+/*
+ * URLNode namespace
+ */
+function urlnode() {
+    
+}
