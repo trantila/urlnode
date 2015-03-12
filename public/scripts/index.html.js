@@ -17,14 +17,19 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 $(function () {
-    var clicks = $("button").asEventStream("click").log();
-    var text = $("input").asEventStream("keyup").map(function (e) {
-        return $(e.target).val();
-    }).toProperty().log();
+    function getInputValue(e) {
+        return $("input").val();
+    }
 
-    var buttonEnabled = text.map(urlnode.yes).log();
+    var clicks = $("button").asEventStream("click")
+        .log();
 
-    buttonEnabled.onValue(function(enabled) {
-        $("button").attr("disabled", !enabled);
-    });
+    var text = $("input").asEventStream("keyup")
+        .map(getInputValue)
+        .toProperty(getInputValue())
+        .log();
+
+    var buttonEnabled = text
+        .map(urlnode.yes).log()
+        .not().onValue($("button"), "attr", "disabled");
 });
