@@ -17,6 +17,7 @@ var URL = Backbone.Model.extend({});
 
 // URLs collection
 var URLs = Backbone.Collection.extend({
+    url: "/urls/",
     model: URL
 });
 
@@ -25,6 +26,7 @@ var URLs = Backbone.Collection.extend({
 var URLEntry = Backbone.View.extend({
     tagName: "li",
     className: "url-entry",
+    template: _.template("<%- id %> -> <%- link %>"),
     events: {
         "click .icon":          "open",
         "click .button.edit":   "openEditDialog",
@@ -35,7 +37,10 @@ var URLEntry = Backbone.View.extend({
         this.listenTo(this.model, "change", this.render);
     },
 
-    render: function() {}
+    render: function() {
+        this.$el.html(this.template(this.model.attributes));
+        return this;
+    }
 
 });
 
