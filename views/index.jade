@@ -5,7 +5,14 @@ block content
     small= title_kicker
   p #{title} is highly barebones as of now, and uses only memory for link storage.
   h2 Contents
-  ul
+  p#new-url
+    label URL:
+    input(type=text)
+    button Shorten!
+  ul#urls
     each val, prop in db
       li
-        a(href=prop)= prop + " -> " + val 
+        a(href=prop)= prop + " -> " + val
+
+block scripts
+  script(src='/scripts/index.html.css')
